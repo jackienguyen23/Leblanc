@@ -1,0 +1,28 @@
+@import './base.css';
+
+body {
+  background: #f9f6f1;
+  color: #1f1f1f;
+}
+
+#app {
+  max-width: 960px;
+  margin: 0 auto;
+  font-weight: normal;
+  min-height: 100vh;
+}
+
+a {
+  color: #111;
+  font-weight: 600;
+}
+
+.ui.segment {
+  border-radius: 18px !important;
+}
+
+.ui.segment,
+.ui.segment p,
+.ui.header {
+  color: #1f1f1f;
+}
