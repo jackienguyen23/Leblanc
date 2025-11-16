@@ -21,6 +21,8 @@ func main() {
 
 	r.GET("/", func(c *gin.Context) { c.JSON(200, gin.H{"msg": "LeBlanc Go API ✅"}) })
 	r.GET("/drinks", handlers.GetDrinks)
+    // GraphQL endpoint (GraphiQL playground available on GET)
+    r.Any("/graphql", handlers.GraphQLHandler())
 	r.POST("/reco/from-features", handlers.RecoFromFeatures)
 	r.POST("/bookings", handlers.CreateBooking)
 
