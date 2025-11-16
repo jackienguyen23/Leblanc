@@ -11,6 +11,10 @@ import { RouterLink, RouterView } from 'vue-router'
         Mood-Booker
       </RouterLink>
       <RouterLink to="/booking" class="item" exact-active-class="active">Booking</RouterLink>
+      <div class="right menu">
+        <RouterLink to="/login" class="item" exact-active-class="active">Login</RouterLink>
+        <RouterLink to="/register" class="item" exact-active-class="active">Register</RouterLink>
+      </div>
     </div>
 
     <RouterView />

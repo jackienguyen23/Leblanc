@@ -12,4 +12,10 @@ export const recoFromFeatures = (payload) =>
 export const createBooking = (booking) =>
   api.post('/bookings', booking).then((res) => res.data)
 
+export const registerUser = (payload) =>
+  api.post('/auth/register', payload).then((res) => res.data)
+
+export const loginUser = (payload) =>
+  api.post('/auth/login', payload).then((res) => res.data)
+
 export default api
