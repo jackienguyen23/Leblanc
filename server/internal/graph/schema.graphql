@@ -1,0 +1,100 @@
+type EmotionFit {
+  calm: Float!
+  happy: Float!
+  stressed: Float!
+  sad: Float!
+  adventurous: Float!
+}
+
+type Drink {
+  _id: ID!
+  name: String!
+  price: Int!
+  tags: [String!]!
+  caffeine: String!
+  temp: String!
+  sweetness: Int!
+  colorTone: String!
+  emotionFit: EmotionFit!
+  image: String!
+  desc: String!
+}
+
+type User {
+  _id: ID!
+  name: String!
+  email: String!
+  createdAt: String!
+}
+
+type BookingItem {
+  drinkId: ID!
+  qty: Int!
+  options: String
+}
+
+type Booking {
+  _id: ID!
+  name: String!
+  phone: String!
+  time: String!
+  items: [BookingItem!]!
+  channel: String!
+}
+
+input EmotionFitInput {
+  calm: Float!
+  happy: Float!
+  stressed: Float!
+  sad: Float!
+  adventurous: Float!
+}
+
+input BookingItemInput {
+  drinkId: ID!
+  qty: Int!
+  options: String
+}
+
+input CreateBookingInput {
+  name: String!
+  phone: String!
+  time: String!
+  items: [BookingItemInput!]!
+  channel: String!
+}
+
+input RegisterInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input LoginInput {
+  name: String!
+  password: String!
+}
+
+type AuthResponse {
+  ok: Boolean!
+  user: User
+}
+
+type RecommendationScore {
+  drinkId: ID!
+  score: Float!
+}
+
+type Query {
+  drinks: [Drink!]!
+  drink(id: ID!): Drink
+  users: [User!]!
+  bookings: [Booking!]!
+}
+
+type Mutation {
+  createBooking(input: CreateBookingInput!): Booking!
+  register(input: RegisterInput!): AuthResponse!
+  login(input: LoginInput!): AuthResponse!
+  recommendFromFeatures(emotionFit: EmotionFitInput!, caffeine: String, temp: String, sweetness: Int): [RecommendationScore!]!
+}

@@ -1,0 +1,19 @@
+# gqlgen.yml
+schema:
+  - internal/graph/schema.graphql
+
+exec:
+  filename: internal/graph/generated.go
+  package: graph
+
+model:
+  filename: internal/graph/models_gen.go
+  package: graph
+
+resolver:
+  filename: internal/graph/resolver.go
+  package: graph
+  type: Resolver
+
+autobind:
+  - "leblanc/server/internal/models"
