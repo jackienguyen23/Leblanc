@@ -19,6 +19,7 @@ func Init() {
 
 	uri := os.Getenv("MONGO_URI")
 	name := os.Getenv("MONGO_DB")
+	// Keep connect attempt short to fail fast if Mongo is unreachable.
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 

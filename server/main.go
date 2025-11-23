@@ -19,7 +19,8 @@ func main() {
 	r := gin.Default()
 	r.Use(cors.Default())
 
-	r.GET("/", func(c *gin.Context) { c.JSON(200, gin.H{"msg": "LeBlanc Go API �o."}) })
+	// Core API routes for menu, recommendations, bookings, and auth.
+	r.GET("/", func(c *gin.Context) { c.JSON(200, gin.H{"msg": "LeBlanc Go API ready."}) })
 	r.GET("/drinks", handlers.GetDrinks)
 	r.POST("/reco/from-features", handlers.RecoFromFeatures)
 	r.POST("/bookings", handlers.CreateBooking)
