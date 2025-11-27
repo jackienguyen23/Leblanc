@@ -23,7 +23,7 @@ type GraphQLResponse struct {
 // Handler creates a Gin handler for GraphQL
 func Handler() gin.HandlerFunc {
 	resolver := &Resolver{}
-	
+
 	return func(c *gin.Context) {
 		var req GraphQLRequest
 		if err := c.BindJSON(&req); err != nil {
@@ -42,65 +42,93 @@ func Handler() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, GraphQLResponse{
-			Data: result,
-		})
+		c.JSON(http.StatusOK, GraphQLResponse{Data: result})
 	}
 }
 
 // Simple query executor (this is a simplified version - in production, use a proper GraphQL library)
-func executeQuery(ctx context.Context, resolver *Resolver, query string, variables map[string]interface{}) (interface{}, error) {
-	// This is a simplified implementation
-	// In a real application, you would use gqlgen or graphql-go to parse and execute queries
-	
-	// For now, we'll create a basic routing based on query content
+func executeQuery(ctx context.Context, resolver *Resolver, query string, variables map[string]interface{}) (map[string]interface{}, error) {
+	// Basic routing based on the presence of operation names; responses are wrapped
+	// in a field keyed by the operation to match the GraphQL spec and frontend expectations.
 	if contains(query, "query") {
+		if contains(query, "drink(") {
+			id, _ := variables["id"].(string)
+			drink, err := resolver.Drink(ctx, id)
+			if err != nil {
+				return nil, err
+			}
+			return map[string]interface{}{"drink": drink}, nil
+		}
 		if contains(query, "drinks") {
-			return resolver.Drinks(ctx)
+			drinks, err := resolver.Drinks(ctx)
+			if err != nil {
+				return nil, err
+			}
+			return map[string]interface{}{"drinks": drinks}, nil
 		}
 		if contains(query, "users") {
-			return resolver.Users(ctx)
+			users, err := resolver.Users(ctx)
+			if err != nil {
+				return nil, err
+			}
+			return map[string]interface{}{"users": users}, nil
 		}
 		if contains(query, "bookings") {
-			return resolver.Bookings(ctx)
+			bookings, err := resolver.Bookings(ctx)
+			if err != nil {
+				return nil, err
+			}
+			return map[string]interface{}{"bookings": bookings}, nil
 		}
 	}
-	
+
 	if contains(query, "mutation") {
 		if contains(query, "createBooking") {
 			var input CreateBookingInput
 			if inputData, ok := variables["input"].(map[string]interface{}); ok {
 				jsonData, _ := json.Marshal(inputData)
-				json.Unmarshal(jsonData, &input)
-				return resolver.CreateBooking(ctx, input)
+				_ = json.Unmarshal(jsonData, &input)
+				booking, err := resolver.CreateBooking(ctx, input)
+				if err != nil {
+					return nil, err
+				}
+				return map[string]interface{}{"createBooking": booking}, nil
 			}
 		}
 		if contains(query, "register") {
 			var input RegisterInput
 			if inputData, ok := variables["input"].(map[string]interface{}); ok {
 				jsonData, _ := json.Marshal(inputData)
-				json.Unmarshal(jsonData, &input)
-				return resolver.Register(ctx, input)
+				_ = json.Unmarshal(jsonData, &input)
+				authResp, err := resolver.Register(ctx, input)
+				if err != nil {
+					return nil, err
+				}
+				return map[string]interface{}{"register": authResp}, nil
 			}
 		}
 		if contains(query, "login") {
 			var input LoginInput
 			if inputData, ok := variables["input"].(map[string]interface{}); ok {
 				jsonData, _ := json.Marshal(inputData)
-				json.Unmarshal(jsonData, &input)
-				return resolver.Login(ctx, input)
+				_ = json.Unmarshal(jsonData, &input)
+				authResp, err := resolver.Login(ctx, input)
+				if err != nil {
+					return nil, err
+				}
+				return map[string]interface{}{"login": authResp}, nil
 			}
 		}
 		if contains(query, "recommendFromFeatures") {
 			var emotionFit EmotionFitInput
 			if emotionData, ok := variables["emotionFit"].(map[string]interface{}); ok {
 				jsonData, _ := json.Marshal(emotionData)
-				json.Unmarshal(jsonData, &emotionFit)
+				_ = json.Unmarshal(jsonData, &emotionFit)
 			}
-			
+
 			var caffeine, temp *string
 			var sweetness *int
-			
+
 			if c, ok := variables["caffeine"].(string); ok {
 				caffeine = &c
 			}
@@ -111,17 +139,21 @@ func executeQuery(ctx context.Context, resolver *Resolver, query string, variabl
 				sInt := int(s)
 				sweetness = &sInt
 			}
-			
-			return resolver.RecommendFromFeatures(ctx, emotionFit, caffeine, temp, sweetness)
+
+			scores, err := resolver.RecommendFromFeatures(ctx, emotionFit, caffeine, temp, sweetness)
+			if err != nil {
+				return nil, err
+			}
+			return map[string]interface{}{"recommendFromFeatures": scores}, nil
 		}
 	}
-	
+
 	return nil, fmt.Errorf("unsupported query")
 }
 
 func contains(s, substr string) bool {
-	return len(s) >= len(substr) && (s == substr || len(s) > len(substr) && 
-		(s[:len(substr)] == substr || s[len(s)-len(substr):] == substr || 
+	return len(s) >= len(substr) && (s == substr || len(s) > len(substr) &&
+		(s[:len(substr)] == substr || s[len(s)-len(substr):] == substr ||
 		findInString(s, substr)))
 }
 

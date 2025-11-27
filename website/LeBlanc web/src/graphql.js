@@ -7,6 +7,17 @@ const client = new GraphQLClient(graphqlEndpoint, {
 })
 
 // Queries
+export const GET_USERS_QUERY = gql`
+  query GetUsers {
+    users {
+      _id
+      name
+      email
+      createdAt
+    }
+  }
+`
+
 export const GET_DRINKS_QUERY = gql`
   query GetDrinks {
     drinks {
@@ -141,6 +152,11 @@ export const RECOMMEND_FROM_FEATURES_MUTATION = gql`
 export const getDrinksGraphQL = async () => {
   const data = await client.request(GET_DRINKS_QUERY)
   return data.drinks
+}
+
+export const getUsersGraphQL = async () => {
+  const data = await client.request(GET_USERS_QUERY)
+  return data.users
 }
 
 export const getDrinkGraphQL = async (id) => {

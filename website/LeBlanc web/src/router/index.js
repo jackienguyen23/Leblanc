@@ -9,19 +9,25 @@ const router = createRouter({
       component: () => import('@/views/Home.vue'),
     },
     {
+      path: '/about',
+      name: 'about',
+      component: () => import('@/views/About.vue'),
+    },
+    {
       path: '/menu',
       name: 'menu',
       component: () => import('@/views/Menu.vue'),
     },
     {
-      path: '/mood-booker',
-      name: 'mood',
-      component: () => import('@/views/MoodBooker.vue'),
-    },
-    {
       path: '/booking',
       name: 'booking',
       component: () => import('@/views/Booking.vue'),
+    },
+    {
+      path: '/verify',
+      name: 'verify',
+      component: () => import('@/views/Verify.vue'),
+      meta: { layout: 'plain' },
     },
     {
       path: '/login',
@@ -32,6 +38,16 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: () => import('@/views/Register.vue'),
+    },
+    {
+      path: '/account',
+      name: 'account',
+      component: () => import('@/views/Account.vue'),
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: () => import('@/views/Admin.vue'),
     },
   ],
 })

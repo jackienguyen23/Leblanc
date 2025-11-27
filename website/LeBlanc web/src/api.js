@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {
+  getUsersGraphQL,
   getDrinksGraphQL,
   getDrinkGraphQL,
   getBookingsGraphQL,
@@ -10,28 +11,39 @@ import {
 } from './graphql'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE || 'http://localhost:4000',
+  baseURL: import.meta.env.VITE_API_BASE  ,
 })
 
 // Configuration: Set to true to use GraphQL, false to use REST API
 const USE_GRAPHQL = import.meta.env.VITE_USE_GRAPHQL === 'true' || false
 
 // REST API functions
-export const getDrinksREST = () => api.get('/drinks').then((res) => res.data)
+const getUsersREST = () => api.get('/users').then((res) => res.data)
+const getDrinksREST = () => api.get('/drinks').then((res) => res.data)
 
-export const recoFromFeaturesREST = (payload) =>
+const recoFromFeaturesREST = (payload) =>
   api.post('/reco/from-features', payload).then((res) => res.data)
 
-export const createBookingREST = (booking) =>
+const createBookingREST = (booking) =>
   api.post('/bookings', booking).then((res) => res.data)
 
-export const registerUserREST = (payload) =>
+const registerUserREST = (payload) =>
   api.post('/auth/register', payload).then((res) => res.data)
 
-export const loginUserREST = (payload) =>
+const loginUserREST = (payload) =>
   api.post('/auth/login', payload).then((res) => res.data)
 
+const requestVerifyREST = (payload) =>
+  api.post('/auth/request-verify', payload).then((res) => res.data)
+
+const verifyTokenREST = (payload) =>
+  api.post('/auth/verify', payload).then((res) => res.data)
+
 // Unified API - switches between REST and GraphQL based on configuration
+export const getUsers = () => {
+  return USE_GRAPHQL ? getUsersGraphQL() : getUsersREST()
+}
+
 export const getDrinks = () => {
   return USE_GRAPHQL ? getDrinksGraphQL() : getDrinksREST()
 }
@@ -107,6 +119,14 @@ export const loginUser = (payload) => {
   return loginUserREST(payload)
 }
 
+export const requestVerify = (payload) => {
+  return requestVerifyREST(payload)
+}
+
+export const verifyToken = (payload) => {
+  return verifyTokenREST(payload)
+}
+
 // Export GraphQL functions directly for specific use cases
 export {
   getDrinksGraphQL,
@@ -116,6 +136,7 @@ export {
   registerUserGraphQL,
   loginUserGraphQL,
   recoFromFeaturesGraphQL,
+  getUsersGraphQL,
 }
 
 // Export REST functions directly for specific use cases
@@ -125,6 +146,9 @@ export {
   createBookingREST,
   registerUserREST,
   loginUserREST,
+  getUsersREST,
+  requestVerifyREST,
+  verifyTokenREST,
 }
 
 export default api
