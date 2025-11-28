@@ -2,6 +2,13 @@
 
 This project now supports both **REST API** and **GraphQL** for frontend-backend communication.
 
+## Hosted endpoints
+
+- Fly.io API base: `https://server-wandering-tree-4946.fly.dev`
+  - REST health: `/`
+  - GraphQL: `/graphql`
+- Vercel frontend: `https://le-blanc-web.vercel.app` (uses the Fly API via `VITE_API_BASE`).
+
 ## Backend (Go Server)
 
 ### Available Endpoints
@@ -25,7 +32,7 @@ cd server
 go run main.go
 ```
 
-Server will start on `http://localhost:4000`
+Server will start on `http://localhost:4000` (Fly.io uses `PORT=8080` from `fly.toml`)
 
 ### GraphQL Schema
 
@@ -122,6 +129,11 @@ The frontend can use either REST API or GraphQL. Configure in `.env`:
 ```env
 VITE_API_BASE=http://localhost:4000
 VITE_USE_GRAPHQL=false  # Set to 'true' to use GraphQL
+# EmailJS (verification + booking confirmation)
+VITE_EMAILJS_SERVICE_ID=...
+VITE_EMAILJS_TEMPLATE_ID=...           # account verification template
+VITE_EMAILJS_BOOKING_TEMPLATE_ID=...   # booking confirmation template
+VITE_EMAILJS_PUBLIC_KEY=...
 ```
 
 ### Starting the Frontend
@@ -214,6 +226,20 @@ import {
 // Use REST functions directly
 const drinks = await getDrinksREST()
 ```
+
+## Deployment
+
+### Fly.io (Go API)
+- Config files: `server/Dockerfile` and `server/fly.toml` (internal port `8080`).
+- Deploy: `cd server && flyctl deploy --config fly.toml --dockerfile Dockerfile`.
+- Secrets to set: `MONGO_URI`, `MONGO_DB`, `ADMIN_NAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `FRONTEND_VERIFY_URL=https://le-blanc-web.vercel.app/verify`, `EMAIL_REQUIRE_MX`.
+- Production base URL after deploy: `https://server-wandering-tree-4946.fly.dev`.
+
+### Vercel (Vue frontend)
+- SPA rewrite: `website/LeBlanc web/vercel.json`.
+- Env vars: `VITE_API_BASE` (point to Fly API), `VITE_EMAILJS_*`, `VITE_ADMIN_EMAIL`.
+- Deploy: `cd website/LeBlanc\ web && vercel --prod`.
+- Production URL: `https://le-blanc-web.vercel.app`.
 
 ## Architecture
 

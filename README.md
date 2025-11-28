@@ -33,3 +33,12 @@ npm run dev
 ```
 
 Configure `VITE_API_BASE` in `website/LeBlanc web/.env` if the backend is not on `http://localhost:4000`.
+
+## Deployments
+
+- Frontend (Vercel): https://le-blanc-web.vercel.app  
+  - SPA rewrite lives in `website/LeBlanc web/vercel.json`.
+  - Deploy from `website/LeBlanc web` with `vercel --prod` after setting `VITE_API_BASE` (point it to the API), `VITE_EMAILJS_*`, and `VITE_ADMIN_EMAIL`.
+- Backend (Fly.io): https://server-wandering-tree-4946.fly.dev  
+  - Uses `server/Dockerfile` and `server/fly.toml` (internal port `8080`).
+  - Deploy with `flyctl deploy --config fly.toml --dockerfile Dockerfile` from `server/` and set secrets such as `MONGO_URI`, `MONGO_DB`, `ADMIN_NAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `FRONTEND_VERIFY_URL=https://le-blanc-web.vercel.app/verify`, and `EMAIL_REQUIRE_MX`.

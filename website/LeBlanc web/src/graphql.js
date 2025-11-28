@@ -70,9 +70,11 @@ export const GET_BOOKINGS_QUERY = gql`
   query GetBookings {
     bookings {
       _id
+      email
       name
       phone
       time
+      guests
       items {
         drinkId
         qty
@@ -88,9 +90,11 @@ export const CREATE_BOOKING_MUTATION = gql`
   mutation CreateBooking($input: CreateBookingInput!) {
     createBooking(input: $input) {
       _id
+      email
       name
       phone
       time
+      guests
       items {
         drinkId
         qty

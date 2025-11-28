@@ -11,6 +11,7 @@
    - Integrated GraphQL endpoint at `/graphql` in `main.go`
 3. **Enhanced Services**: Added `ScoreDrinks` function for recommendation scoring
 4. **Maintained REST API**: All existing REST endpoints still work
+5. **Fly.io Deployment**: Added `Dockerfile` and `fly.toml` to deploy the Go API (internal port 8080, secrets for Mongo/admin/email, CORS allows the Vercel frontend)
 
 ### Frontend (Vue.js)
 1. **Fixed API Base URL**: Updated `.env` to use port 4000
@@ -24,6 +25,8 @@
    - Toggle between REST/GraphQL via `VITE_USE_GRAPHQL` env variable
    - Backward compatible with existing code
 5. **Created Demo Component**: `ApiDemo.vue` to test both APIs
+6. **Vercel Hosting**: Added SPA rewrite config (`vercel.json`) and env defaults (`VITE_API_BASE` -> Fly API) for Vercel deployments
+7. **Booking Email Confirmation**: Booking form now sends a confirmation email via EmailJS (set `VITE_EMAILJS_BOOKING_TEMPLATE_ID`)
 
 ## 🚀 How to Use
 
@@ -41,6 +44,11 @@ npm install  # First time only
 npm run dev
 ```
 Frontend runs on the Vite dev server (usually `http://localhost:5173`)
+
+## Production Deployments
+
+- API on Fly.io: `https://server-wandering-tree-4946.fly.dev` (deploy with `flyctl deploy --config server/fly.toml --dockerfile server/Dockerfile` and set secrets `MONGO_URI`, `MONGO_DB`, `ADMIN_NAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `FRONTEND_VERIFY_URL`, `EMAIL_REQUIRE_MX`).
+- Frontend on Vercel: `https://le-blanc-web.vercel.app` (deploy from `website/LeBlanc web` with `vercel --prod`; envs `VITE_API_BASE`, `VITE_EMAILJS_*`, `VITE_ADMIN_EMAIL` should point at the Fly API and email service).
 
 ## 📋 API Endpoints
 

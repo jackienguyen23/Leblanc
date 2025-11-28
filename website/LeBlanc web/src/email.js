@@ -12,9 +12,11 @@ import { requestVerify, verifyToken } from '@/api'
 
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
+const BOOKING_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_BOOKING_TEMPLATE_ID
 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 
 const emailConfigured = SERVICE_ID && TEMPLATE_ID && PUBLIC_KEY
+const bookingEmailConfigured = SERVICE_ID && BOOKING_TEMPLATE_ID && PUBLIC_KEY
 
 // If token/verifyLink are provided (from backend register response), reuse them.
 export const sendVerificationEmail = async (email, name = '', opts = {}) => {
@@ -57,3 +59,44 @@ export const checkVerificationToken = async (token) => {
 }
 
 export const isEmailReady = () => Boolean(emailConfigured)
+
+export const isBookingEmailReady = () => Boolean(bookingEmailConfigured)
+
+export const sendBookingEmail = async (booking = {}, opts = {}) => {
+  if (!bookingEmailConfigured) {
+    throw new Error('EmailJS booking template is not configured (missing env vars).')
+  }
+  if (!booking.email) {
+    throw new Error('Booking email is missing.')
+  }
+
+  const timeText = booking.time ? new Date(booking.time).toLocaleString() : ''
+  const items = booking.items || []
+  const itemsText = items.length
+    ? items
+        .map((item, idx) => {
+          const name = item.name || item.drink?.name || item.drinkName || item.drinkId || `Item ${idx + 1}`
+          const qty = item.qty || 1
+          return `${idx + 1}. ${name} x${qty}`
+        })
+        .join('\n')
+    : 'Không có đồ uống đặt trước.'
+
+  await emailjs.send(
+    SERVICE_ID,
+    BOOKING_TEMPLATE_ID,
+    {
+      to_email: booking.email,
+      customer_email: booking.email,
+      customer_name: booking.name,
+      customer_phone: booking.phone,
+      time: timeText,
+      guests: booking.guests || booking.guest || '',
+      items_text: itemsText,
+      notes: booking.note || booking.notes || '',
+      booking_id: opts.bookingId || booking.bookingId || '',
+      channel: booking.channel || 'web',
+    },
+    PUBLIC_KEY
+  )
+}

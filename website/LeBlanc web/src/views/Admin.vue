@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { inject, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getUsers } from '@/api'
 
@@ -8,6 +8,7 @@ const users = ref([])
 const loading = ref(true)
 const error = ref('')
 const ADMIN_EMAIL = (import.meta.env.VITE_ADMIN_EMAIL || '').toLowerCase()
+const theme = inject('theme', ref('day'))
 
 const isAdminUser = (user) => {
   if (!user) return false
@@ -59,12 +60,18 @@ const formatDate = (iso) => {
   <section class="admin">
     <header class="head">
       <div>
-        <p class="eyebrow">Admin</p>
+        <p class="eyebrow">ADMIN PAGE</p>
         <h1>User directory</h1>
         <p class="lede">List of all registered users.</p>
       </div>
-      <button class="btn" type="button" @click="fetchUsers" :disabled="loading">
-        {{ loading ? 'Refreshing…' : 'Refresh' }}
+      <button
+        class="btn"
+        :class="{ 'is-night': theme === 'night' }"
+        type="button"
+        @click="fetchUsers"
+        :disabled="loading"
+      >
+        {{ loading ? 'Refreshing...' : 'Refresh' }}
       </button>
     </header>
 
@@ -88,45 +95,64 @@ const formatDate = (iso) => {
 <style scoped>
 .admin {
   display: grid;
-  gap: 14px;
+  gap: 18px;
 }
 
 .head {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 22px;
 }
 
 .eyebrow {
   margin: 0;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  font-size: 1.04rem;
   color: var(--tan);
 }
 
 h1 {
-  margin: 4px 0;
+  margin: 6px 0;
+  font-size: 2.6rem;
+  line-height: 1.1;
 }
 
 .lede {
   margin: 0;
-  color: rgba(0, 0, 0, 0.65);
+  font-size: 1.12rem;
+  color: var(--ink);
+  opacity: 0.82;
 }
 
 .btn {
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 13px 18px;
+  border-radius: 13px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   background: #0f1424;
   color: #f6efe6;
   font-weight: 800;
+  font-size: 1.05rem;
   cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease, color 0.12s ease;
+}
+
+.btn.is-night {
+  background: var(--tan);
+  color: #0f1424;
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .banner {
-  padding: 12px 14px;
-  border-radius: 10px;
+  padding: 16px 18px;
+  border-radius: 13px;
+  font-size: 1.05rem;
   background: rgba(0, 0, 0, 0.04);
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
@@ -139,16 +165,17 @@ h1 {
 
 .table {
   display: grid;
-  gap: 6px;
+  gap: 8px;
 }
 
 .row {
   display: grid;
   grid-template-columns: 1.2fr 1.8fr 1fr;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.02);
+  gap: 13px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 1.05rem;
 }
 
 .row.header {
@@ -158,6 +185,7 @@ h1 {
 
 .name {
   font-weight: 800;
+  font-size: 1.06rem;
 }
 
 .email {
@@ -165,7 +193,8 @@ h1 {
 }
 
 .date {
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--ink);
+  opacity: 0.82;
 }
 
 @media (max-width: 720px) {

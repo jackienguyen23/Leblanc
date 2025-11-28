@@ -78,12 +78,21 @@ export const recoFromFeatures = (payload) => {
 }
 
 export const createBooking = (booking) => {
+  const normalizedTime = booking.time
+    ? (() => {
+        const d = new Date(booking.time)
+        return Number.isNaN(d.getTime()) ? booking.time : d.toISOString()
+      })()
+    : booking.time
+
   if (USE_GRAPHQL) {
     // Convert booking data to GraphQL format if needed
     const input = {
+      email: booking.email,
       name: booking.name,
       phone: booking.phone,
-      time: booking.time,
+      time: normalizedTime,
+      guests: booking.guests ?? booking.guest ?? null,
       items: booking.items.map(item => ({
         drinkId: item.drinkId,
         qty: item.qty,
@@ -93,7 +102,7 @@ export const createBooking = (booking) => {
     }
     return createBookingGraphQL(input)
   }
-  return createBookingREST(booking)
+  return createBookingREST({ ...booking, time: normalizedTime })
 }
 
 export const registerUser = (payload) => {

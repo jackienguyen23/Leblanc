@@ -1,12 +1,22 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, provide, ref, watchEffect } from 'vue'
+import { computed, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue'
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import darkLogo from '@/assets/dark-logo.png'
 import brightLogo from '@/assets/bright-logo.png'
 
 const ADMIN_EMAIL = (import.meta.env.VITE_ADMIN_EMAIL || '').toLowerCase()
 
-const theme = ref(localStorage.getItem('theme') || 'day')
+const getInitialTheme = () => {
+  try {
+    const stored = localStorage.getItem('theme')
+    return stored === 'night' || stored === 'day' ? stored : 'day'
+  } catch (err) {
+    console.warn('Could not read stored theme', err)
+    return 'day'
+  }
+}
+
+const theme = ref(getInitialTheme())
 provide('theme', theme)
 const router = useRouter()
 const route = useRoute()
@@ -67,12 +77,21 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 
-watchEffect(() => {
+const applyTheme = (value) => {
+  if (typeof document === 'undefined') return
+  const themeValue = value === 'night' ? 'night' : 'day'
   const body = document.body
   body.classList.remove('theme-day', 'theme-night')
-  body.classList.add(theme.value === 'night' ? 'theme-night' : 'theme-day')
-  localStorage.setItem('theme', theme.value)
-})
+  body.classList.add(themeValue === 'night' ? 'theme-night' : 'theme-day')
+  document.documentElement.setAttribute('data-theme', themeValue)
+  try {
+    localStorage.setItem('theme', themeValue)
+  } catch (err) {
+    console.warn('Could not persist theme', err)
+  }
+}
+
+watch(theme, (val) => applyTheme(val), { immediate: true })
 
 const toggleTheme = () => {
   theme.value = theme.value === 'night' ? 'day' : 'night'
@@ -121,9 +140,13 @@ const handleClickOutside = (event) => {
           <RouterLink v-if="!isAuthed" to="/register" class="nav-link" exact-active-class="active">Sign up</RouterLink>
         </template>
         <div v-if="isAuthed" ref="accountRef" class="account-wrap">
-          <button class="account-pill" type="button" @click.stop="toggleAccountMenu">
+          <button
+            class="account-pill"
+            type="button"
+            :aria-label="`Account for ${user?.name || 'user'}`"
+            @click.stop="toggleAccountMenu"
+          >
             <div class="avatar" aria-hidden="true">{{ userInitial }}</div>
-            <span class="account-name">{{ user?.name }}</span>
           </button>
           <div v-if="showAccountMenu" class="account-menu">
             <div class="account-meta">
@@ -145,8 +168,16 @@ const handleClickOutside = (event) => {
             <button class="logout" type="button" @click="logout">Log out</button>
           </div>
         </div>
-        <button class="theme-toggle" type="button" @click="toggleTheme">
-          {{ theme === 'night' ? 'Day Mode' : 'Night Mode' }}
+        <button
+          class="theme-toggle"
+          :class="{ 'is-night': theme === 'night' }"
+          type="button"
+          :aria-label="theme === 'night' ? 'Switch to day mode' : 'Switch to night mode'"
+          @click="toggleTheme"
+        >
+          <span class="toggle-track" :class="{ 'is-night': theme === 'night' }">
+            <span class="toggle-thumb" aria-hidden="true"></span>
+          </span>
         </button>
       </nav>
     </header>
@@ -201,19 +232,20 @@ const handleClickOutside = (event) => {
 
 .nav {
   display: flex;
-  gap: 12px;
+  gap: 20px;
   align-items: center;
   flex-wrap: wrap;
 }
 
 .account-pill {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
+  justify-content: center;
+  gap: 0;
+  padding: 0;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: transparent;
+  border: none;
 }
 
 .account-wrap {
@@ -223,18 +255,18 @@ const handleClickOutside = (event) => {
 .account-pill {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
+  justify-content: center;
+  padding: 0;
   border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(0, 0, 0, 0.04);
+  border: none;
+  background: transparent;
   cursor: pointer;
   font-weight: 800;
 }
 
 .avatar {
-  height: 34px;
-  width: 34px;
+  height: 40px;
+  width: 40px;
   border-radius: 50%;
   background: linear-gradient(145deg, #b88443, #e1c58d);
   color: #0b0b0b;
@@ -297,8 +329,8 @@ const handleClickOutside = (event) => {
   color: var(--ink);
   font-weight: 800;
   letter-spacing: 0.02em;
-  padding: 10px 0;
-  font-size: 1.05rem;
+  padding: 12px 0;
+  font-size: 1.15rem;
 }
 
 .nav-link.active {
@@ -306,18 +338,54 @@ const handleClickOutside = (event) => {
 }
 
 .theme-toggle {
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--dark);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
   background: transparent;
   color: var(--ink);
-  font-weight: 800;
-  letter-spacing: 0.02em;
   cursor: pointer;
 }
 
+.theme-toggle.is-night {
+  color: var(--tan);
+}
+
+.toggle-track {
+  position: relative;
+  width: 52px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1.5px solid currentColor;
+  background: rgba(0, 0, 0, 0.06);
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  box-sizing: border-box;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.toggle-track.is-night {
+  background: rgba(0, 0, 0, 0.14);
+  border-color: currentColor;
+}
+
+.toggle-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: currentColor;
+  transition: transform 0.18s ease;
+  transform: translateX(0);
+}
+
+.toggle-track.is-night .toggle-thumb {
+  transform: translateX(22px);
+}
+
 .theme-toggle:hover {
-  background: rgba(0, 0, 0, 0.08);
+  background: transparent;
 }
 
 .cta {

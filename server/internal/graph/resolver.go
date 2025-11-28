@@ -78,23 +78,29 @@ func (r *Resolver) Bookings(ctx context.Context) ([]*models.Booking, error) {
 
 // Mutation resolvers
 type CreateBookingInput struct {
-	Name    string              `json:"name"`
-	Phone   string              `json:"phone"`
-	Time    string              `json:"time"`
-	Items   []BookingItemInput  `json:"items"`
-	Channel string              `json:"channel"`
+	Email   string             `json:"email"`
+	Name    string             `json:"name"`
+	Phone   string             `json:"phone"`
+	Time    string             `json:"time"`
+	Guests  int                `json:"guests"`
+	Items   []BookingItemInput `json:"items"`
+	Channel string             `json:"channel"`
 }
 
 type BookingItemInput struct {
-	DrinkID string         `json:"drinkId"`
-	Qty     int            `json:"qty"`
-	Options string         `json:"options"`
+	DrinkID string `json:"drinkId"`
+	Qty     int    `json:"qty"`
+	Options string `json:"options"`
 }
 
 func (r *Resolver) CreateBooking(ctx context.Context, input CreateBookingInput) (*models.Booking, error) {
 	timeVal, err := time.Parse(time.RFC3339, input.Time)
 	if err != nil {
 		return nil, fmt.Errorf("invalid time format")
+	}
+	email := strings.TrimSpace(input.Email)
+	if email == "" {
+		return nil, fmt.Errorf("email is required")
 	}
 
 	items := make([]models.BookingItem, len(input.Items))
@@ -122,9 +128,11 @@ func (r *Resolver) CreateBooking(ctx context.Context, input CreateBookingInput) 
 
 	booking := models.Booking{
 		ID:      primitive.NewObjectID(),
+		Email:   email,
 		Name:    input.Name,
 		Phone:   input.Phone,
 		Time:    timeVal,
+		Guests:  input.Guests,
 		Items:   items,
 		Channel: input.Channel,
 	}

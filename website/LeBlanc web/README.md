@@ -36,3 +36,8 @@ yarn dev
 ```sh
 yarn build
 ```
+
+## Production
+
+- Default API base points to the Fly.io deployment: `https://server-wandering-tree-4946.fly.dev` (override via `VITE_API_BASE`).
+- Deploy the SPA to Vercel from this directory with `vercel --prod`; remember to set `VITE_API_BASE`, `VITE_EMAILJS_*`, and `VITE_ADMIN_EMAIL` in the Vercel project settings.

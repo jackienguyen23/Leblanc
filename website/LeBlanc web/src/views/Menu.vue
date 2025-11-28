@@ -13,6 +13,16 @@ import suaChuaChanhDay from '@/assets/sua-chua-chanh-day.png'
 import matchaLatte from '@/assets/matcha-latte.png'
 import caCaoQueNong from '@/assets/ca-cao-que-nong.png'
 import traTaoQueMatOngNong from '@/assets/tra-tao-que-mat-ong-nong.png'
+import ginTonicChanhBuoi from '@/assets/gin-tonic-chanh-buoi.png'
+import mojitoBacHaCoDien from '@/assets/mojito-bac-ha-co-dien.png'
+import rumCokeChanh from '@/assets/rum-coke-chanh.png'
+import whiskyHighball from '@/assets/whisky-highball.png'
+import houseRed from '@/assets/house-red.png'
+import houseWhite from '@/assets/house-white.png'
+import beer from '@/assets/beer.png'
+import craftedBeer from '@/assets/crafted-beer.png'
+import plumLiqueur from '@/assets/plum-liqueur.png'
+import midnightCoffee from '@/assets/midnight-coffee.png'
 
 // Morning: curated 12-item set with real photos.
 const morningMenu = [
@@ -162,43 +172,138 @@ const morningMenu = [
   },
 ]
 
-// Night: keep simple fallback; API can overwrite if available.
+// Night: 10-item cocktail/boozy menu (English), with real photos.
+// Signature drinks first: Midnight Coffee, Citrus Gin & Tonic, Classic Mint Mojito.
 const nightSpecials = [
   {
-    _id: 'sangria',
-    name: 'Sangria',
-    desc: 'Red wine, citrus, stone fruits; lightly sweet and refreshing.',
-    price: 120000,
-    caffeine: 'None',
+    _id: 'midnight-coffee',
+    name: 'Midnight Coffee',
+    desc: 'Coffee cocktail with rum/whisky and espresso; warm, boozy coffee sweetness.',
+    price: 129000,
+    image: midnightCoffee,
+    caffeine: '~60 mg/cup',
     temp: 'Cold',
-    sweetness: 3,
-    kind: 'Cocktail',
+    sweetness: '3-4',
+    kind: 'Signature coffee cocktail',
     isAlcoholic: true,
-    baseSpirit: 'Wine',
+    baseSpirit: 'Rum or whisky + espresso',
   },
   {
-    _id: 'margarita',
-    name: 'Margarita',
-    desc: 'Tequila, lime, salted rim; bright, tangy, lightly saline.',
-    price: 130000,
-    caffeine: 'None',
+    _id: 'gin-tonic-chanh-buoi',
+    name: 'Citrus Gin & Tonic',
+    desc: 'Gin & tonic with lemon and grapefruit peel; crisp, aromatic, lightly fizzy.',
+    price: 99000,
+    image: ginTonicChanhBuoi,
+    caffeine: '-',
     temp: 'Cold',
-    sweetness: 2,
-    kind: 'Cocktail',
+    sweetness: 'Light',
+    kind: 'Signature cocktail',
     isAlcoholic: true,
-    baseSpirit: 'Tequila',
+    baseSpirit: 'Gin + tonic',
   },
   {
-    _id: 'negroni',
-    name: 'Negroni',
-    desc: 'Gin, Campari, sweet vermouth; balanced bitter-sweet.',
-    price: 140000,
-    caffeine: 'None',
+    _id: 'mojito-bac-ha-co-dien',
+    name: 'Classic Mint Mojito',
+    desc: 'White rum, fresh mint, lime, soda; cool and gently sweet.',
+    price: 109000,
+    image: mojitoBacHaCoDien,
+    caffeine: '-',
     temp: 'Cold',
-    sweetness: 1,
-    kind: 'Cocktail',
+    sweetness: '2-3',
+    kind: 'Signature cocktail',
     isAlcoholic: true,
-    baseSpirit: 'Gin',
+    baseSpirit: 'Rum + soda',
+  },
+  {
+    _id: 'rum-coke-chanh',
+    name: 'Rum & Coke with lime',
+    desc: 'White rum and cola with lime; familiar, bubbly, easy-drinking.',
+    price: 89000,
+    image: rumCokeChanh,
+    caffeine: '-',
+    temp: 'Cold',
+    sweetness: '3',
+    kind: 'Long drink',
+    isAlcoholic: true,
+    baseSpirit: 'Rum + cola',
+  },
+  {
+    _id: 'whisky-highball',
+    name: 'Whisky Highball',
+    desc: 'Whisky with soda, subtle fizz; mellow malt aroma, not harsh.',
+    price: 129000,
+    image: whiskyHighball,
+    caffeine: '-',
+    temp: 'Cold',
+    sweetness: '2',
+    kind: 'Long drink',
+    isAlcoholic: true,
+    baseSpirit: 'Whisky + soda',
+  },
+  {
+    _id: 'house-red',
+    name: 'House Red Wine (by the glass)',
+    desc: 'Fruity red wine, slightly tart; easy, dinner-friendly.',
+    price: 119000,
+    image: houseRed,
+    caffeine: '-',
+    temp: 'Room temp',
+    sweetness: 'Light',
+    kind: 'Wine',
+    isAlcoholic: true,
+    baseSpirit: 'Red wine',
+  },
+  {
+    _id: 'house-white',
+    name: 'House White Wine (by the glass)',
+    desc: 'Bright white wine with mild fruit (apple, pear, citrus).',
+    price: 119000,
+    image: houseWhite,
+    caffeine: '-',
+    temp: 'Cold',
+    sweetness: 'Light',
+    kind: 'Wine',
+    isAlcoholic: true,
+    baseSpirit: 'White wine',
+  },
+  {
+    _id: 'beer',
+    name: 'Classic lager beer',
+    desc: 'Cold lager, lightly bitter, crisp and easy.',
+    price: 49000,
+    image: beer,
+    caffeine: '-',
+    temp: 'Cold',
+    sweetness: 'Low',
+    kind: 'Beer',
+    isAlcoholic: true,
+    baseSpirit: 'Lager',
+  },
+  {
+    _id: 'crafted-beer',
+    name: 'Craft beer (1–2 rotating taps)',
+    desc: 'Pale ale / IPA / wheat; mildly bitter, hoppy or fruity depending on tap.',
+    price: 89000,
+    image: craftedBeer,
+    caffeine: '-',
+    temp: 'Cold',
+    sweetness: 'Low',
+    kind: 'Craft beer',
+    isAlcoholic: true,
+    baseSpirit: 'Beer',
+  },
+  {
+    _id: 'plum-liqueur',
+    name: 'Plum liqueur (umeshu)',
+    desc: 'Japanese-style plum liqueur; sweet fruit aroma, guest-friendly.',
+    price: 89000,
+    image: plumLiqueur,
+    caffeine: '-',
+    temp: 'Cold',
+    sweetness: '4',
+    kind: 'Fruit liqueur',
+    isAlcoholic: true,
+    baseSpirit: 'Plum liqueur',
   },
 ]
 
@@ -232,12 +337,16 @@ const fetchDrinks = async () => {
   try {
     const res = await getDrinks()
     const list = Array.isArray(res) && res.length ? res : []
+    const dayList = list.length ? filterByTag(list, 'day') : []
     const nightList = list.length ? filterByTag(list, 'night') : []
 
-    // Keep morning set; only update night menu if API provides data.
+    dayDrinks.value = (dayList.length ? dayList : morningMenu).map((d) =>
+      normalizeDrink(d, d.tags?.includes('tea') ? 'Tea' : 'Coffee'),
+    )
     nightDrinks.value = (nightList.length ? nightList : nightSpecials).map((d) => normalizeDrink(d, 'Cocktail'))
   } catch (err) {
     error.value = err?.message || 'Could not load menu right now. Showing fallback menu.'
+    dayDrinks.value = morningMenu.map((d) => normalizeDrink(d, d.tags?.includes('tea') ? 'Tea' : 'Coffee'))
     nightDrinks.value = nightSpecials.map((d) => normalizeDrink(d, 'Cocktail'))
   } finally {
     loading.value = false
@@ -275,7 +384,7 @@ onMounted(fetchDrinks)
         <p class="lede">
           {{
             menuMode === 'night'
-              ? 'Sau 6PM: low-ABV mocktails, signature cocktails, va coffee cocktails.'
+              ? 'After 6PM: low-ABV mocktails, signature cocktails, and coffee cocktails.'
               : 'Every cup from our Leblanc coffee lab balances smooth texture, restorative botanicals, and mindful service.'
           }}
         </p>

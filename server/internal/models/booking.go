@@ -14,9 +14,11 @@ type BookingItem struct {
 
 type Booking struct {
 	ID      primitive.ObjectID `bson:"_id,omitempty" json:"_id"`
+	Email   string             `bson:"email" json:"email"`
 	Name    string             `bson:"name" json:"name"`
 	Phone   string             `bson:"phone" json:"phone"`
 	Time    time.Time          `bson:"time" json:"time"`
+	Guests  int                `bson:"guests,omitempty" json:"guests,omitempty"`
 	Items   []BookingItem      `bson:"items" json:"items"`
 	Channel string             `bson:"channel" json:"channel"`
 }
