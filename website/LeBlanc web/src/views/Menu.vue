@@ -1,101 +1,174 @@
 <script setup>
 import { computed, inject, onMounted, ref } from 'vue'
 import { getDrinks } from '@/api'
+import americanoCamSa from '@/assets/americano-cam-sa.png'
+import cafeSuaDa from '@/assets/cafe-sua-da.png'
+import cafeDua from '@/assets/cafe-dua.png'
+import latteYenMach from '@/assets/latte-sua-yen-mach.png'
+import traDaoCamSa from '@/assets/tra-dao-cam-sa.png'
+import traGungMatOng from '@/assets/tra-gung-mat-ong.png'
+import nuocEpCamCaRot from '@/assets/nuoc-ep-cam-ca-rot.png'
+import sinhToChuoiYenMach from '@/assets/sinh-to-chuoi-yen-mach.png'
+import suaChuaChanhDay from '@/assets/sua-chua-chanh-day.png'
+import matchaLatte from '@/assets/matcha-latte.png'
+import caCaoQueNong from '@/assets/ca-cao-que-nong.png'
+import traTaoQueMatOngNong from '@/assets/tra-tao-que-mat-ong-nong.png'
 
-const fallbackDrinks = [
+// Morning: curated 12-item set with real photos.
+const morningMenu = [
   {
-    _id: 'espresso',
-    name: 'Espresso',
-    desc: 'Shot of espresso with your choice of bean: arabica, robusta, moka, culi.',
-    price: 35000,
-    image: 'https://images.unsplash.com/photo-1510626176961-4b37d0b4e904?auto=format&fit=crop&w=900&q=80',
-    caffeine: 'High',
-    temp: 'Hot',
-    sweetness: 1,
-    kind: 'Coffee',
-    isAlcoholic: false,
-  },
-  {
-    _id: 'nau-da',
-    name: 'Nâu đá',
-    desc: 'Vietnamese iced milk coffee. Beans: arabica, robusta, moka, culi.',
-    price: 40000,
-    image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=80',
-    caffeine: 'High',
-    temp: 'Cold',
-    sweetness: 3,
-    kind: 'Coffee',
-    isAlcoholic: false,
-  },
-  {
-    _id: 'bac-siu',
-    name: 'Bạc sỉu',
-    desc: 'Saigon-style coffee heavy on milk. Bean choices: arabica, robusta, moka, culi.',
-    price: 38000,
-    image: 'https://images.unsplash.com/photo-1512568400610-62da28bc8a13?auto=format&fit=crop&w=900&q=80',
-    caffeine: 'Med',
-    temp: 'Hot',
+    _id: 'cafe-sua-da',
+    name: 'Vietnamese iced milk coffee',
+    desc: 'Robusta phin from Buon Ma Thuot, condensed milk, ice; bold and creamy in the Saigon style.',
+    price: 29000,
+    image: cafeSuaDa,
+    caffeine: '~90 mg/cup',
+    temp: 'Cold (ice)',
     sweetness: 4,
-    kind: 'Coffee',
+    kind: 'Phin coffee',
     isAlcoholic: false,
   },
   {
-    _id: 'latte',
-    name: 'Latte',
-    desc: 'Silky espresso with steamed milk. Add cốm, vani, sữa đặc, sữa kem, hoặc chuối.',
-    price: 45000,
-    image: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=900&q=80',
-    caffeine: 'Med',
-    temp: 'Either',
+    _id: 'americano-cam-sa',
+    name: 'Orange lemongrass americano',
+    desc: 'Da Lat Arabica espresso with fresh orange juice and smashed lemongrass; no milk; light citrus aroma.',
+    price: 39000,
+    image: americanoCamSa,
+    caffeine: '~80 mg/cup',
+    temp: 'Cold (ice)',
     sweetness: 2,
-    kind: 'Coffee',
+    kind: 'Espresso bar',
     isAlcoholic: false,
   },
   {
-    _id: 'mocha',
-    name: 'Mocha',
-    desc: 'Espresso, cocoa, and velvety milk. Bean options: arabica, robusta, moka, culi.',
-    price: 48000,
-    image: 'https://images.unsplash.com/photo-1459257868276-5e65389e2722?auto=format&fit=crop&w=900&q=80',
-    caffeine: 'Med',
-    temp: 'Either',
+    _id: 'latte-yen-mach',
+    name: 'Oat milk latte',
+    desc: 'Arabica espresso with unsweetened oat milk, fine foam; fits dairy-free guests.',
+    price: 45000,
+    image: latteYenMach,
+    caffeine: '~75 mg/cup',
+    temp: 'Hot',
     sweetness: 3,
-    kind: 'Coffee',
+    kind: 'Espresso bar',
     isAlcoholic: false,
   },
   {
-    _id: 'macchiato',
-    name: 'Macchiato',
-    desc: 'Espresso marked with microfoam. Flavor with vani, sữa kem, chuối, hoặc cốm.',
-    price: 47000,
-    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80',
-    caffeine: 'Med',
-    temp: 'Hot',
-    sweetness: 1,
-    kind: 'Coffee',
+    _id: 'cafe-dua',
+    name: 'Coconut iced coffee',
+    desc: 'Arabica-Robusta espresso blend with light coconut cream and low-sugar milk, blended with ice.',
+    price: 49000,
+    image: cafeDua,
+    caffeine: '~85 mg/cup',
+    temp: 'Cold (ice)',
+    sweetness: 4,
+    kind: 'Signature coffee',
     isAlcoholic: false,
   },
   {
-    _id: 'cappuccino',
-    name: 'Cappuccino',
-    desc: 'Balanced espresso, steamed milk, and foam. Beans: arabica, robusta, moka, culi.',
-    price: 45000,
-    image: 'https://images.unsplash.com/photo-1485808191679-5f86510681a2?auto=format&fit=crop&w=900&q=80',
-    caffeine: 'Med',
+    _id: 'tra-dao-cam-sa',
+    name: 'Peach orange lemongrass tea',
+    desc: 'Cold-brew Ceylon black tea with peach syrup, orange slices, lemongrass, peach chunks.',
+    price: 39000,
+    image: traDaoCamSa,
+    caffeine: '-',
+    temp: 'Cold (ice)',
+    sweetness: 3,
+    kind: 'Fruit tea',
+    isAlcoholic: false,
+  },
+  {
+    _id: 'tra-gung-mat-ong',
+    name: 'Ginger honey tea',
+    desc: 'Light green tea, fresh ginger slices, forest honey; warming for morning.',
+    price: 32000,
+    image: traGungMatOng,
+    caffeine: '-',
     temp: 'Hot',
     sweetness: 2,
-    kind: 'Coffee',
+    kind: 'Hot tea',
+    isAlcoholic: false,
+  },
+  {
+    _id: 'nuoc-ep-cam-ca-rot',
+    name: 'Orange carrot juice',
+    desc: 'Fresh orange + carrot juice, no syrup; sweetness adjustable on request.',
+    price: 39000,
+    image: nuocEpCamCaRot,
+    caffeine: '-',
+    temp: 'Cold (light ice)',
+    sweetness: '2-3',
+    kind: 'Cold-pressed juice',
+    isAlcoholic: false,
+  },
+  {
+    _id: 'sinh-to-chuoi-yen-mach',
+    name: 'Banana oat smoothie',
+    desc: 'Ripe banana, rolled oats, almond milk, touch of honey; filling and gym-friendly.',
+    price: 45000,
+    image: sinhToChuoiYenMach,
+    caffeine: '-',
+    temp: 'Cold (blended)',
+    sweetness: 3,
+    kind: 'Healthy smoothie',
+    isAlcoholic: false,
+  },
+  {
+    _id: 'sua-chua-chanh-day',
+    name: 'Passionfruit yogurt frappe',
+    desc: 'Fermented yogurt with fresh passionfruit sauce, blended with ice; tangy-sweet.',
+    price: 39000,
+    image: suaChuaChanhDay,
+    caffeine: '-',
+    temp: 'Cold (blended)',
+    sweetness: '3-4',
+    kind: 'Yogurt',
+    isAlcoholic: false,
+  },
+  {
+    _id: 'matcha-latte',
+    name: 'Matcha latte',
+    desc: 'Japanese matcha whisked with fresh milk, steamed; aromatic with a gentle bitterness.',
+    price: 49000,
+    image: matchaLatte,
+    caffeine: '- (tea-based)',
+    temp: 'Hot',
+    sweetness: 3,
+    kind: 'Tea latte',
+    isAlcoholic: false,
+  },
+  {
+    _id: 'ca-cao-que-nong',
+    name: 'Hot cacao with cinnamon',
+    desc: 'Natural cacao powder, fresh milk (can add condensed milk), syrup or honey, plus cinnamon dust or a stick for warmth.',
+    price: 45000,
+    image: caCaoQueNong,
+    caffeine: '-',
+    temp: 'Hot',
+    sweetness: '3-4',
+    kind: 'Cacao drink',
+    isAlcoholic: false,
+  },
+  {
+    _id: 'tra-tao-que-mat-ong-nong',
+    name: 'Warm apple cinnamon honey tea',
+    desc: 'Light black or green tea with fresh apple slices, cinnamon stick, honey; optionally a squeeze of lime; gentle apple-cinnamon aroma.',
+    price: 39000,
+    image: traTaoQueMatOngNong,
+    caffeine: '-',
+    temp: 'Hot',
+    sweetness: '2-3',
+    kind: 'Healthy hot tea',
     isAlcoholic: false,
   },
 ]
 
+// Night: keep simple fallback; API can overwrite if available.
 const nightSpecials = [
   {
     _id: 'sangria',
-    name: 'Sangria - Tình đơn phương',
-    desc: 'Red wine, citrus, stone fruits; ngọt nhẹ như một mối tình đơn phương.',
+    name: 'Sangria',
+    desc: 'Red wine, citrus, stone fruits; lightly sweet and refreshing.',
     price: 120000,
-    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80',
     caffeine: 'None',
     temp: 'Cold',
     sweetness: 3,
@@ -105,10 +178,9 @@ const nightSpecials = [
   },
   {
     _id: 'margarita',
-    name: 'Margarita - Rối lòng',
-    desc: 'Tequila, lime, salted rim—cú xoáy rối lòng nhưng đầy tỉnh táo.',
+    name: 'Margarita',
+    desc: 'Tequila, lime, salted rim; bright, tangy, lightly saline.',
     price: 130000,
-    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80&sat=-10',
     caffeine: 'None',
     temp: 'Cold',
     sweetness: 2,
@@ -117,63 +189,10 @@ const nightSpecials = [
     baseSpirit: 'Tequila',
   },
   {
-    _id: 'mojito',
-    name: 'Mojito - Thanh lọc',
-    desc: 'Rum, bạc hà, lime, soda—thanh lọc và sảng khoái.',
-    price: 110000,
-    image: 'https://images.unsplash.com/photo-1544145945-19cc90f9c6bf?auto=format&fit=crop&w=900&q=80',
-    caffeine: 'None',
-    temp: 'Cold',
-    sweetness: 3,
-    kind: 'Cocktail',
-    isAlcoholic: true,
-    baseSpirit: 'Rum',
-  },
-  {
-    _id: 'pimms',
-    name: 'Pimm’s - Ngậm ngùi',
-    desc: 'Pimm’s, dưa leo, táo, gừng ale—ngậm ngùi nhưng dễ uống.',
-    price: 120000,
-    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80&sat=5',
-    caffeine: 'None',
-    temp: 'Cold',
-    sweetness: 2,
-    kind: 'Cocktail',
-    isAlcoholic: true,
-    baseSpirit: 'Pimm’s',
-  },
-  {
-    _id: 'pina-colada',
-    name: 'Piña Colada - Tức giận',
-    desc: 'Rum, dứa, cream of coconut—tropical nhưng dư vị hơi “tức giận”.',
-    price: 115000,
-    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80&sat=-5',
-    caffeine: 'None',
-    temp: 'Cold',
-    sweetness: 3,
-    kind: 'Cocktail',
-    isAlcoholic: true,
-    baseSpirit: 'Rum',
-  },
-  {
-    _id: 'caipirinha',
-    name: 'Caipirinha - Ích kỉ tự trách',
-    desc: 'Cachaça, lime, đường mía—sắc chua gắt như lúc tự trách.',
-    price: 120000,
-    image: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?auto=format&fit=crop&w=900&q=80',
-    caffeine: 'None',
-    temp: 'Cold',
-    sweetness: 2,
-    kind: 'Cocktail',
-    isAlcoholic: true,
-    baseSpirit: 'Cachaça',
-  },
-  {
     _id: 'negroni',
-    name: 'Negroni - Đắng cay',
-    desc: 'Gin, Campari, vermouth đỏ—đắng cay nhưng sâu sắc.',
+    name: 'Negroni',
+    desc: 'Gin, Campari, sweet vermouth; balanced bitter-sweet.',
     price: 140000,
-    image: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=900&q=80&sat=-10',
     caffeine: 'None',
     temp: 'Cold',
     sweetness: 1,
@@ -183,7 +202,6 @@ const nightSpecials = [
   },
 ]
 
-// Local fallbacks when a drink has no image URL from the API.
 const placeholders = [
   'https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=600&q=80',
   'https://images.unsplash.com/photo-1497534446932-c925b458314e?auto=format&fit=crop&w=600&q=80',
@@ -194,7 +212,7 @@ const theme = inject('theme', ref('day'))
 
 const loading = ref(true)
 const error = ref('')
-const dayDrinks = ref([])
+const dayDrinks = ref(morningMenu)
 const nightDrinks = ref(nightSpecials)
 
 const menuMode = computed(() => (theme?.value === 'night' ? 'night' : 'day'))
@@ -214,33 +232,42 @@ const fetchDrinks = async () => {
   try {
     const res = await getDrinks()
     const list = Array.isArray(res) && res.length ? res : []
-    const dayList = list.length ? filterByTag(list, 'day') : []
     const nightList = list.length ? filterByTag(list, 'night') : []
 
-    dayDrinks.value = (dayList.length ? dayList : fallbackDrinks).map((d) => normalizeDrink(d, 'Coffee'))
+    // Keep morning set; only update night menu if API provides data.
     nightDrinks.value = (nightList.length ? nightList : nightSpecials).map((d) => normalizeDrink(d, 'Cocktail'))
   } catch (err) {
-    error.value = err?.message || 'Khong the tai menu luc nay. Hien thi menu mau.'
-    dayDrinks.value = fallbackDrinks.map((d) => normalizeDrink(d, 'Coffee'))
+    error.value = err?.message || 'Could not load menu right now. Showing fallback menu.'
     nightDrinks.value = nightSpecials.map((d) => normalizeDrink(d, 'Cocktail'))
   } finally {
     loading.value = false
   }
 }
 
-const imgForIndex = (drink, idx) => drink.image || placeholders[idx % placeholders.length]
-// Prices arrive as integers; format to Vietnamese locale currency.
+const imgFor = (drink, idx) => drink.image || placeholders[idx % placeholders.length]
 const formatCurrency = (value) => `${(Number(value) || 0).toLocaleString('vi-VN')} VND`
+const formatSweetness = (value) => {
+  if (value === undefined || value === null || value === '') return ''
+  return typeof value === 'number' ? `Sweetness ${value}/5` : `Sweetness ${value}`
+}
+const displayCaffeine = (value) => {
+  if (!value && value !== 0) return ''
+  const text = String(value).trim()
+  if (!text || text === '-' || text === '—') return ''
+  const normalized = text.replace(/[-—\s()]/g, '').toLowerCase()
+  if (!normalized || normalized.includes('teabased')) return ''
+  return text
+}
 
 onMounted(fetchDrinks)
 </script>
 
 <template>
-  <section class="menu-page">
+  <section class="menu-page" :class="menuMode">
     <div class="panel heading">
       <div class="hero-copy">
         <p class="kicker" :class="{ night: menuMode === 'night' }">
-          {{ menuMode === 'night' ? 'Nightfall Mixology' : 'The Creative Coffee Menu' }}
+          {{ menuMode === 'night' ? 'Nightfall mixology' : 'The Creative Coffee Menu' }}
         </p>
         <h1 class="hero-title">
           {{ menuMode === 'night' ? 'Mocktails, cocktails, and spirited pours.' : 'Thoughtfully brewed for every mood.' }}
@@ -248,47 +275,50 @@ onMounted(fetchDrinks)
         <p class="lede">
           {{
             menuMode === 'night'
-              ? 'After dark we shift into bar service with low-ABV mocktails, signature cocktails, and spirited coffee riffs.'
+              ? 'Sau 6PM: low-ABV mocktails, signature cocktails, va coffee cocktails.'
               : 'Every cup from our Leblanc coffee lab balances smooth texture, restorative botanicals, and mindful service.'
           }}
         </p>
+        <div class="chips">
+          <span class="chip">{{ menuMode === 'night' ? 'Bar menu' : 'Coffee & non-alcohol' }}</span>
+          <span class="chip" v-if="menuMode === 'day'">Leblanc coffee lab</span>
+          <span class="chip" v-else>Serving after 6PM</span>
+        </div>
       </div>
       <div class="mode-banner hero-card" :class="menuMode">
         <div class="mode-label">
-          <span class="dot"></span>
-          {{ menuMode === 'night' ? 'Night mode: mocktail, cocktail & boozy picks' : 'Day mode: coffee & non-alcohol' }}
+          <span class="mode-pill">{{ menuMode === 'night' ? 'Night mode' : 'Day mode' }}</span>
+          <span class="mode-sub">
+            {{ menuMode === 'night' ? 'Mocktail & cocktail picks' : 'Coffee, tea, juice, smoothie' }}
+          </span>
         </div>
-        <small>Use the Day/Night toggle in the top right to see the matching menu.</small>
+        <small>Use the Day/Night toggle in the top-right header to switch menus.</small>
       </div>
     </div>
 
-    <div v-if="loading && menuMode === 'day'" class="state">Dang tai menu...</div>
+    <div v-if="loading && menuMode === 'day'" class="state">Loading menu...</div>
     <div v-else-if="menuMode === 'day' && !currentMenu.length" class="state error">
-      {{ error || 'Khong co du lieu menu.' }}
+      {{ error || 'No menu data.' }}
     </div>
     <div v-else>
       <div v-if="menuMode === 'day' && error" class="state error">{{ error }}</div>
-      <div class="grid">
-        <article v-for="(drink, idx) in currentMenu" :key="drink._id || drink.name" class="card">
-          <img :src="imgForIndex(drink, idx)" :alt="drink.name" loading="lazy" />
-          <div>
+      <div class="grid" :class="menuMode">
+        <article v-for="(drink, idx) in currentMenu" :key="drink._id || drink.name" class="card" :class="menuMode">
+          <div class="card-media">
+            <img :src="imgFor(drink, idx)" :alt="drink.name" loading="lazy" />
+            <span class="kind-pill">{{ drink.kind || (menuMode === 'night' ? 'Night' : 'Day') }}</span>
+          </div>
+          <div class="card-body">
             <div class="card-top">
-              <div class="title-wrap">
-                <h3>{{ drink.name }}</h3>
-                <span class="pill" :class="drink.kind ? drink.kind.toLowerCase().replace(/\s+/g, '-') : ''">
-                  {{ drink.kind || (menuMode === 'night' ? 'Night' : 'Day') }}
-                </span>
-              </div>
-              <span>{{ formatCurrency(drink.price) }}</span>
+              <h3>{{ drink.name }}</h3>
+              <span class="price">{{ formatCurrency(drink.price) }}</span>
             </div>
             <p class="desc">{{ drink.desc }}</p>
-            <ul>
-              <li v-if="drink.isAlcoholic !== undefined">Alcohol: {{ drink.isAlcoholic ? 'Co' : 'Khong' }}</li>
-              <li v-if="drink.baseSpirit">Base: {{ drink.baseSpirit }}</li>
-              <li>Caffeine: {{ drink.caffeine }}</li>
-              <li>Temp: {{ drink.temp }}</li>
-              <li>Sweetness: {{ drink.sweetness }}/5</li>
-            </ul>
+            <div class="meta-row">
+              <span v-if="displayCaffeine(drink.caffeine)" class="chip tone">{{ displayCaffeine(drink.caffeine) }}</span>
+              <span class="chip tone">{{ drink.temp || '-' }}</span>
+              <span v-if="formatSweetness(drink.sweetness)" class="chip tone">{{ formatSweetness(drink.sweetness) }}</span>
+            </div>
           </div>
         </article>
       </div>
@@ -304,12 +334,14 @@ onMounted(fetchDrinks)
   color: var(--ink);
   background: var(--paper);
   padding: 32px;
-  border: none;
+}
+
+.menu-page.night {
+  color: #f5f1e8;
 }
 
 .panel {
   padding: clamp(20px, 3vw, 48px) 0;
-  border: none;
 }
 
 .heading {
@@ -330,11 +362,7 @@ onMounted(fetchDrinks)
 }
 
 :global(.theme-night) .kicker {
-  color: #fff !important;
-}
-
-.kicker.night {
-  color: #fff;
+  color: #d6a35a !important;
 }
 
 .hero-copy {
@@ -345,7 +373,7 @@ onMounted(fetchDrinks)
 }
 
 .hero-title {
-  font-size: clamp(2.6rem, 3vw + 1.4rem, 4.2rem);
+  font-size: clamp(2.6rem, 3vw + 1.4rem, 3.8rem);
   line-height: 1.08;
   margin: 0;
 }
@@ -354,6 +382,31 @@ onMounted(fetchDrinks)
   margin: 0;
   font-size: 1.08rem;
   max-width: 820px;
+  opacity: 0.9;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.04);
+  font-weight: 750;
+  letter-spacing: 0.02em;
+}
+
+.menu-page.night .chip {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f5f1e8;
 }
 
 .mode-banner {
@@ -364,13 +417,13 @@ onMounted(fetchDrinks)
   padding: 18px 20px;
   border: 1px solid var(--cream-strong);
   border-radius: 14px;
-  background: var(--paper);
+  background: linear-gradient(140deg, rgba(235, 223, 208, 0.9), rgba(246, 239, 230, 0.9));
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.06);
 }
 
 .mode-banner.night {
   border-color: #243145;
-  background: #101826;
+  background: linear-gradient(140deg, #141c2d, #0f1424);
   color: #f5f1e8;
 }
 
@@ -381,12 +434,31 @@ onMounted(fetchDrinks)
 }
 
 .mode-label {
+  display: grid;
+  gap: 4px;
+}
+
+.mode-pill {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
   font-weight: 800;
-  letter-spacing: 0.04em;
-  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.mode-banner.night .mode-pill {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f5f1e8;
+}
+
+.mode-sub {
+  font-weight: 700;
+  opacity: 0.88;
 }
 
 .mode-banner small {
@@ -394,29 +466,27 @@ onMounted(fetchDrinks)
   font-size: 0.95rem;
 }
 
-.dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--tan);
-  box-shadow: 0 0 0 6px rgba(216, 163, 90, 0.18);
-}
-
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 26px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 28px;
 }
 
 .card {
   border: 1px solid #e7ddcf;
-  background: var(--paper);
+  background: #fdfaf5;
   display: flex;
   flex-direction: column;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
+  border-radius: 18px;
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card.night {
+  background: #111827;
+  border-color: #233045;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
 }
 
 .card:hover {
@@ -424,70 +494,91 @@ onMounted(fetchDrinks)
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
 }
 
-.card img {
-  width: 100%;
+.card-media {
+  position: relative;
   height: 240px;
-  object-fit: cover;
+  overflow: hidden;
 }
 
-.card div {
-  padding: 24px;
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.card:hover img {
+  transform: scale(1.03);
+}
+
+.kind-pill {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  backdrop-filter: blur(4px);
+}
+
+.card-body {
+  padding: 22px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .card-top {
   display: flex;
   justify-content: space-between;
-  font-weight: 600;
-  color: var(--ink);
-  gap: 16px;
-}
-
-.title-wrap {
-  display: inline-flex;
-  gap: 10px;
   align-items: center;
-  flex-wrap: wrap;
+  gap: 16px;
+  color: var(--ink);
 }
 
-.pill {
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: #f3ede4;
-  border: 1px solid #e1d4c3;
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  font-weight: 800;
+.card.night .card-top {
+  color: #f5f1e8;
 }
 
-.pill.mocktail {
-  background: #e9f7ef;
-  border-color: #c1e9d4;
-  color: #0f6b3f;
+.card-top h3 {
+  margin: 0;
+  font-size: 1.3rem;
 }
 
-.pill.cocktail {
-  background: #fef3e6;
-  border-color: #f2d3a2;
-  color: #9b5b14;
-}
-
-.pill.coffee {
-  background: #f3ede4;
-  border-color: #e1d4c3;
-  color: #5b4635;
+.price {
+  font-weight: 900;
+  letter-spacing: 0.02em;
 }
 
 .desc {
   margin: 0;
+  opacity: 0.9;
 }
 
-ul {
-  padding-left: 18px;
-  margin: 0;
+.card.night .desc {
+  color: #e7e3d9;
+}
+
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip.tone {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.card.night .chip.tone {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #f5f1e8;
 }
 
 .state {
